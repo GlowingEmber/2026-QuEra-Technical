@@ -3,7 +3,16 @@ name = "2026-QuEra-Technical"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-    "bloqade-circuit[cirq, stim, tsim]>=0.11.0",
+    "bloqade-circuit[cirq, stim]>=0.11.0",
+    "bloqade-tsim>=0.1.0",
     "ipykernel>=7.1.0",
     "stimcirq>=1.15.0",
+]
+
+[project.optional-dependencies]
+tsim = ["bloqade-circuit[tsim]>=0.11.0"]
+tsim-macintel = [
+  "bloqade-circuit[tsim]>=0.11.0",
+  "jax==0.4.38; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+  "jaxlib==0.4.38; sys_platform == 'darwin' and platform_machine == 'x86_64'",
 ]
