@@ -1,35 +1,33 @@
 from bloqade import squin
-from typing import Tuple, Callable, Any, Optional
+from typing import Dict, Tuple, Optional, Callable
 
+POI_CONFIG: Dict[str, Tuple[str, float]] = {}
 
-NOISE_CHANNELS = {
-    "depolarize": (squin.depolarize, 0.5),
-    "amplitude_damping": (squin.qubit_loss, 0.5),
-    # can add more
-}
+def configure_poi(config: Dict[str, Tuple[str, float]]):
+    global POI_CONFIG
+    POI_CONFIG = config.copy()
+    poi_kernels = dict()
+    for x in POI_CONFIG.keys():
+        poi_kernels[x] = get_poi_kernel(x)
+    return poi_kernels
 
-### Example payload
-poi_noises_payload = {
-    "a": (squin.depolarize, 0.5),
-    "interesting_area": (squin.qubit_loss, 0.5)
-}
-
-def poi(q, label, custom_probability: Optional[float] = None):
-    """
-    Implements a 'point of interest' gate.
-
-    Args
-        qubit: qubit to add label to
-        label: label for point of interest
-        noise_channel: noise channel.
-    """
-
-    noise_channel, default_prob = poi_noises_payload.get(label, (None, None))
-    probability = custom_probability if custom_probability is not None else default_prob
-    if noise_channel is not None:
-        return noise_channel(p=probability, qubit=q)
-
-
-
-
+def get_poi_kernel(label: str):
     
+    config = POI_CONFIG.get(label, ("none", 0.0))
+    noise_type, prob = config
+    
+    if noise_type == "depolarize":
+        @squin.kernel
+        def _poi(q):
+            squin.depolarize(prob, q)
+        return _poi
+    elif noise_type == "qubit_loss":
+        @squin.kernel
+        def _poi(q):
+            squin.qubit_loss(prob, q)
+        return _poi
+    else:
+        @squin.kernel
+        def _poi(q):
+            squin.u3(0, 0, 0, q)
+        return _poi
