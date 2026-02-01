@@ -6,7 +6,6 @@ from bloqade.cirq_utils.noise import (
 )
 from bloqade.cirq_utils.noise.transform import transform_circuit
 import numpy as np
-import numpy as np
 
 def _cirq_gemini_one_zone_noise(circuit: cirq.Circuit, scaling_factor: float = 1.0):
     "Exports Squin code to Cirq and returns a noisy circuit using GeminiOneZoneNoiseModel"
@@ -42,5 +41,5 @@ def analyze_noise_channels(ker, noise_source, noise_model = _cirq_gemini_two_zon
 
     raise ValueError("Unknown parameters")
 
-ker = None # Replace with Pranav's stuff
-print(analyze_noise_channels(ker, _cirq_gemini_two_zone_noise))
+# ker = None # Replace with Pranav's stuff
+# print(analyze_noise_channels(ker, _cirq_gemini_two_zone_noise))
